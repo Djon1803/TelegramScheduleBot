@@ -19,14 +19,15 @@ button_weather = 'Погода'
 button_bus = "Автобус 10"
 button_bus_east = 'Восточка'
 button_bus_finite = 'Изоплит'
-button_refresh = 'Обновить357'
+button_refresh = 'Обновить'
 
-all=["Дневник", "Расписание", 'Погода', "Автобус 10", 'Восточка', 'Изоплит', 'Обновить357', 'killl', 'на неделю', 'на сегодня', 'на завтра', 'hi','Hi','Hello','hello','Привет','привет','погода','klll']
+all=["Дневник", "Расписание", 'Погода', "Автобус 10", 'Восточка', 'Изоплит', 'Обновить', 'user','User', 'на неделю', 'на сегодня', 'на завтра', 'hi','Hi','Hello','hello','Привет','привет','погода','замены','Замены','Помощь','Help','помощь','help']
 
 
 names={
     'Shavkat': '574227924',
     'Lil': '837754073',
+    'Максим':  '1097421328',
 }
 
 
@@ -34,9 +35,9 @@ def rasp1(update: Update, context: CallbackContext, week_time):
     weeks = {
         1: ['2| Ин.яз    | 10:15-11:50','3| Ин.яз    | 12:45-14:20','4| ОП       | 14:30-16:05'],
         2: ['?| ПРАКТИКА | ???'],
-        3: ['1| ФК       | 8:30-10:05', '2| АРХ/ПСОИ | 10:15-11:50', '3| АРХ      | 12:45-14:20','4| ОП       | 14:30-16:05'],
+        3: ['1| ФК       | 8:30-10:05', '2| АРХ/ПСОИ | 10:15-11:50', '3| АРХ      | 12:45-14:20', '4| ОП       | 14:30-16:05'],
         4: ['2| ЭВМ      | 10:15-11:50', '3| ПСОИ     | 12:45-14:20', '4| ОП       | 14:30-16:05'],
-        5: ['2| ЭМЛ/ОС   | 10:15-11:50', '3| ЭВМ      | 12:45-14:20', '4| ОС       | 14:30-16:05','5| ЭМЛ      | 16:25-18:00'],
+        5: ['2| ЭМЛ/ОС   | 10:15-11:50', '3| ЭВМ      | 12:45-14:20', '4| ОС       | 14:30-16:05', '5| ЭМЛ      | 16:25-18:00'],
         6: ['1| ИТ/С++   | 8:30-10:05', '2| С++      | 10:15-11:50'],
         }
     for key in weeks:
@@ -46,6 +47,7 @@ def rasp1(update: Update, context: CallbackContext, week_time):
                 update.message.reply_text(
                     text=i,
                 )
+
 
 def rasp2(update: Update, context: CallbackContext):
     weeks = {
@@ -77,20 +79,7 @@ def rasp2(update: Update, context: CallbackContext):
             )
 
 
-
-
 def upkmsk(update: Update, context: CallbackContext):
-    hour = time.strftime('%H')
-    minute = time.strftime('%M')
-    hourminute = str(hour + ':' + minute)
-    time1 = (str(str(datetime.now()).split())).split('-')
-    year = str(time1[0][4:])
-    month = str(time1[1])
-    day = str(time1[2][:2])
-    all_date = str(day + '/' + month + '/' + year + ' ' + hourminute)
-    dt = datetime.strptime(all_date, "%d/%m/%y %H:%M")
-    tt = dt.timetuple()
-    yday0 = int(tt.tm_yday)
     # Файл, полученный в Google Developer Console
     CREDENTIALS_FILE = 'ros.json'
     # ID Google Sheets документа (можно взять из его URL)
@@ -118,45 +107,40 @@ def upkmsk(update: Update, context: CallbackContext):
     hour = time.strftime('%H')
     minute = time.strftime('%M')
     hourminute = str(hour + ':' + minute)
-    data_r = ((str(lis1[0]).split())[4]).split('.')
-    year = str(data_r[2][2:])
-    month = str(data_r[1])
-    day = str(data_r[0])
-    all_date = str(day + '/' + month + '/' + year + ' ' + hourminute)
-    dt = datetime.strptime(all_date, "%d/%m/%y %H:%M")
-    tt = dt.timetuple()
-    yday1 = int(tt.tm_yday)
-    lis1 = values2['values']
+    data_r = ((str(lis1[0]).split())[4])
+    data1 = data_r
+
+    lis2 = values2['values']
     hour = time.strftime('%H')
     minute = time.strftime('%M')
     hourminute = str(hour + ':' + minute)
-    data_r = ((str(lis1[0]).split())[4]).split('.')
-    year = str(data_r[2][2:])
-    month = str(data_r[1])
-    day = str(data_r[0])
-    all_date = str(day + '/' + month + '/' + year + ' ' + hourminute)
-    dt = datetime.strptime(all_date, "%d/%m/%y %H:%M")
-    tt = dt.timetuple()
-    yday2 = int(tt.tm_yday)
-    print('vsaaaaa')
-    if yday0 +1 == yday1:
-        lis1 = values['values']
-    if yday0 +1 == yday2:
-        lis1 = values2['values']
-    kk = ''
+    data_r = ((str(lis2[0]).split())[4])
+    data2=data_r
+
     pp = '0'
+
+    update.message.reply_text(text=('Дата замены на:  '+ data1))
     for i in range(1, len(lis1)):
+        kk = ''
         l = lis1[i]
         if l[1] == 'П-283':
             pp='1'
             for j in range(len(l)):
                 kk = kk+l[j] + ' '
-            update.message.reply_text(text=(kk))
+            update.message.reply_text(text=(kk+'\n'))
+
+    update.message.reply_text(text=('Дата замены на:  '+ data2))
+    for i in range(1, len(lis2)):
+        kk = ''
+        l = lis2[i]
+        if l[1] == 'П-283':
+            pp='1'
+            for j in range(len(l)):
+                kk = kk+l[j] + ' '
+            update.message.reply_text(text=(kk+'\n'))
 
     if pp == '0':
-        update.message.reply_text(text='На завтра замен по группе П-283 нет!!')
-
-
+        update.message.reply_text(text='замен по группе П-283 нет!!')
 
 
 def weather(update: Update, context: CallbackContext):
@@ -165,7 +149,6 @@ def weather(update: Update, context: CallbackContext):
     city = "Екатеринбург"
     observation = owm.weather_at_place(city)
     w = observation.get_weather()
-    print(w)
     compas = w.get_wind()['deg']
 
     def cardinal_points(compas):
@@ -193,8 +176,6 @@ def weather(update: Update, context: CallbackContext):
     cardinal = cardinal_points(compas)
     speed = str(w.get_wind()['speed'])
     humidity = str(w.get_humidity())
-    u=str(update.message.date)
-    print(u)
     update.message.reply_text(
         text='Температура:  ' + temperature + '° ' + status + "\nВлажность:  " + humidity + " %" + '\nВетерт:   ' + speed + ' м/с, ' + cardinal + " ",
     )
@@ -273,13 +254,6 @@ def time_table(direction, update: Update, context: CallbackContext):
         )
 
 
-# def button_book_handler(update: Update, context: CallbackContext):
-#     update.message.reply_text(
-#         text='Категория "дневник" пока не доступна!',
-#         reply_markup=ReplyKeyboardRemove(),
-#     )
-
-
 def button_bus_handler(update: Update, context: CallbackContext):
     reply_markup = ReplyKeyboardMarkup(
         keyboard=[
@@ -292,7 +266,7 @@ def button_bus_handler(update: Update, context: CallbackContext):
     )
 
     update.message.reply_text(
-        text='Выбери остановку:',
+        text='Выберите остановку:',
         reply_markup=reply_markup,
     )
 
@@ -304,6 +278,7 @@ def button_ras(update: Update, context: CallbackContext):
                 KeyboardButton(text='на неделю'),
                 KeyboardButton(text='на сегодня'),
                 KeyboardButton(text='на завтра'),
+                KeyboardButton(text='Замены'),
             ],
         ],
         resize_keyboard=True
@@ -312,7 +287,6 @@ def button_ras(update: Update, context: CallbackContext):
         text='Выбери расписание:',
         reply_markup=reply_markup,
     )
-
 
 r=1
 def message_handler(update: Update, context: CallbackContext):
@@ -348,7 +322,6 @@ def message_handler(update: Update, context: CallbackContext):
 
     if text == 'на сегодня':
         week_time = int(time.strftime('%w'))
-        print(week_time)
         if week_time==0:
             update.message.reply_text(
                 reply_markup=ReplyKeyboardRemove(),
@@ -368,19 +341,28 @@ def message_handler(update: Update, context: CallbackContext):
         rasp2(update=update, context=context)
 
 
-    if text == 'klll':
-        print(122)
+    if text == 'Замены' or text == 'замены':
+        update.message.reply_text(
+            text='    //// ЗАМЕНЫ ////',
+            reply_markup=ReplyKeyboardRemove(),
+        )
         upkmsk(update=update, context=context)
 
 
-    if text=='killl':
+    if text == 'Помощь' or text == 'Help' or text == 'помощь' or text == 'help':
+        update.message.reply_text(
+            text='user - Список всех участников бота \n Обновить - Отправить обновления, всем участникам',
+        )
+
+
+    if text=='user' or text=='User' :
         for key in names:
             context.bot.send_message(chat_id=574227924, text=key+'  '+str(names[key]))
             # print(key, '--', names[key])
 
-    if text == button_refresh:
+    if text == button_refresh and id == 574227924:
         for key in names:
-            context.bot.send_message(chat_id=names[key], text=" !!!Это не проста так! зайди зацени!!! \n Чтобы узнать расписание напиши боту 'Расписание'! \n Результат может отправиться не сразу!\n Автоматизация расписание будет не скоро!")
+            context.bot.send_message(chat_id=names[key], text=" Чтобы узнать замены напиши боту 'замены'! \n Автоматизация замен будет не скоро!")
 
     if text == 'hi' or text == 'Hi' or text == 'Hello' or text == 'hello' or text == 'Привет' or text == 'привет':
         name = update.message.chat.first_name
@@ -390,11 +372,6 @@ def message_handler(update: Update, context: CallbackContext):
 
     if text == button_upkmsk:
         return (button_ras(update=update, context=context))
-
-
-    # if text == button_book:
-    #     text1 = text
-    #     return button_book_handler(update=update, context=context), text1
 
     if text == button_bus:
         text1 = text
