@@ -376,10 +376,19 @@ def message_handler(update: Update, context: CallbackContext):
     if text == button_bus:
         text1 = text
         return (button_bus_handler(update=update, context=context)), text1
-    if (text == button_bus_east) or (text == button_bus_finite) :
+    
+    if text == button_bus_east:
         direction = button_bus_east
         update.message.reply_text(
             text='Рейсы "Автобуса 10" остановки "Восточная"',
+            reply_markup=ReplyKeyboardRemove(),
+        )
+        time_table(direction, update=update, context=context)
+
+    if text == button_bus_finite:
+        direction = button_bus_finite
+        update.message.reply_text(
+            text='Рейсы "Автобуса 10" остановки "Изоплит"',
             reply_markup=ReplyKeyboardRemove(),
         )
         time_table(direction, update=update, context=context)
