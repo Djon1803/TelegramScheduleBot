@@ -13,6 +13,9 @@ from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 
 
+import sched, time
+s = sched.scheduler(time.time, time.sleep)
+
 button_book = "Дневник"
 button_upkmsk = "Расписание"
 button_weather = 'Погода'
@@ -21,7 +24,7 @@ button_bus_east = 'Восточка'
 button_bus_finite = 'Изоплит'
 button_refresh = 'Обновить'
 
-all=["Дневник", "Расписание", 'Погода', "Автобус 10", 'Восточка', 'Изоплит', 'Обновить', 'user','User', 'на неделю', 'на сегодня', 'на завтра', 'hi','Hi','Hello','hello','Привет','привет','погода','замены','Замены','Помощь','Help','помощь','help']
+all=["Дневник", "Расписание", 'Погода', "Автобус 10", 'Восточка', 'Изоплит', 'Обновить', 'user','User', 'на неделю', 'на сегодня', 'на завтра', 'hi','Hi','Hello','hello','Привет','привет','погода','замены','Замены','Помощь','Help','помощь','help','3596']
 
 
 names={
@@ -254,6 +257,79 @@ def time_table(direction, update: Update, context: CallbackContext):
         )
 
 
+
+def upkmsk1(update: Update, context: CallbackContext):
+    # Файл, полученный в Google Developer Console
+    CREDENTIALS_FILE = 'ros.json'
+    # ID Google Sheets документа (можно взять из его URL)
+    spreadsheet_id = '1ZBJrG8jyDRjknaT9_xiHavdVCA9KhUhj8-i3KumCakY'
+    # Авторизуемся и получаем service — экземпляр доступа к API
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(
+        CREDENTIALS_FILE,
+        ['https://www.googleapis.com/auth/spreadsheets',
+         'https://www.googleapis.com/auth/drive'])
+    httpAuth = credentials.authorize(httplib2.Http())
+    service = build('sheets', 'v4', http=httpAuth)
+    # Пример чтения файла
+    values = service.spreadsheets().values().get(
+        spreadsheetId=spreadsheet_id,
+        range='замены!A2:D72',
+        majorDimension='ROWS',
+    ).execute()
+    values2 = service.spreadsheets().values().get(
+        spreadsheetId=spreadsheet_id,
+        range='замены!F2:I72',
+        majorDimension='ROWS',
+    ).execute()
+    lis1 = values['values']
+    data_r = ((str(lis1[0]).split())[4])
+    data1 = data_r
+    lis2 = values2['values']
+    data_r = ((str(lis2[0]).split())[4])
+    data2=data_r
+    pp = '0'
+    for key in names:
+        context.bot.send_message(chat_id=names[key],
+                                 text=(' //// ЗАМЕНЫ ////'))
+    for key in names:
+        context.bot.send_message(chat_id=names[key],
+                                 text=('Дата замены на:  '+ data1))
+    for i in range(1, len(lis1)):
+        kk = ''
+        l = lis1[i]
+        if l[1] == 'П-283':
+            pp='1'
+            for j in range(len(l)):
+                kk = kk+l[j] + ' '
+            for key in names:
+                context.bot.send_message(chat_id=names[key],
+                                         text=(kk+'\n'))
+    if pp == '0':
+        for key in names:
+            context.bot.send_message(chat_id=names[key],
+                                     text='замен на эту дату ' + data1 + ' нет!!')
+    pp = '0'
+    for key in names:
+        context.bot.send_message(chat_id=names[key],
+                                 text=('Дата замены на:  ' + data2))
+    for i in range(1, len(lis2)):
+        kk = ''
+        l = lis2[i]
+        if l[1] == 'П-283':
+            pp='1'
+            for j in range(len(l)):
+                kk = kk+l[j] + ' '
+            for key in names:
+                context.bot.send_message(chat_id=names[key],
+                                         text=(kk+'\n'))
+    if pp == '0':
+        for key in names:
+            context.bot.send_message(chat_id=names[key],
+                                     text='замен на эту дату ' + data2 + ' нет!!')
+    s.enter(10, 1, upkmsk(update=update, context=context), (s,))
+
+
+
 def button_bus_handler(update: Update, context: CallbackContext):
     reply_markup = ReplyKeyboardMarkup(
         keyboard=[
@@ -355,6 +431,11 @@ def message_handler(update: Update, context: CallbackContext):
         )
 
 
+    if text == '3596' and id == 574227924:
+        s.enter(5, 1, upkmsk1(update=update, context=context), (s,))
+        s.run()
+
+
     if text=='user' or text=='User' :
         for key in names:
             context.bot.send_message(chat_id=574227924, text=key+'  '+str(names[key]))
@@ -376,7 +457,7 @@ def message_handler(update: Update, context: CallbackContext):
     if text == button_bus:
         text1 = text
         return (button_bus_handler(update=update, context=context)), text1
-    
+
     if text == button_bus_east:
         direction = button_bus_east
         update.message.reply_text(
