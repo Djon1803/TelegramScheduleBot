@@ -29,8 +29,8 @@ all=["Дневник", "Расписание", 'Погода', "Автобус 1
 
 names={
     'Shavkat': '574227924',
-    'Lil': '837754073',
-    'Максим':  '1097421328',
+    # 'Lil': '837754073',
+    # 'Максим':  '1097421328',
 }
 
 
@@ -122,28 +122,32 @@ def upkmsk(update: Update, context: CallbackContext):
 
     pp = '0'
 
-    update.message.reply_text(text=('Дата замены на:  '+ data1))
+    update.message.reply_text(text=('Замены на:  '+ data1))
     for i in range(1, len(lis1)):
         kk = ''
         l = lis1[i]
-        if l[1] == 'П-283':
+        if l[1] == 'П-283' or l[1] == 'п-283' or l[1] == 'П283' or l[1] == 'п283':
             pp='1'
             for j in range(len(l)):
                 kk = kk+l[j] + ' '
             update.message.reply_text(text=(kk+'\n'))
+    if pp == '0':
+        update.message.reply_text(text='Замен на эту дату ' + data1 + ' нет!!')
 
-    update.message.reply_text(text=('Дата замены на:  '+ data2))
+    pp = '0'
+    update.message.reply_text(text=('Замены на:  '+ data2))
     for i in range(1, len(lis2)):
         kk = ''
         l = lis2[i]
-        if l[1] == 'П-283':
+        if l[1] == 'П-283' or l[1] == 'п-283' or l[1] == 'П283' or l[1] == 'п283':
             pp='1'
             for j in range(len(l)):
                 kk = kk+l[j] + ' '
             update.message.reply_text(text=(kk+'\n'))
 
     if pp == '0':
-        update.message.reply_text(text='замен по группе П-283 нет!!')
+        update.message.reply_text(text='Замен на эту дату ' + data2 + ' нет!!')
+
 
 
 def weather(update: Update, context: CallbackContext):
@@ -202,13 +206,11 @@ def time_table(direction, update: Update, context: CallbackContext):
             timetable = east_Saturday
         if direction == button_bus_finite:
             timetable = finite_Saturday
-
-    if week == 'Sunday':
+    elif week == 'Sunday':
         if direction == button_bus_east:
             timetable = east_Sunday
         if direction == button_bus_finite:
             timetable = finite_Sunday
-
     else:
         if direction == button_bus_east:
             timetable = east_weekdays
@@ -287,46 +289,47 @@ def upkmsk1(update: Update, context: CallbackContext):
     lis2 = values2['values']
     data_r = ((str(lis2[0]).split())[4])
     data2=data_r
+
     pp = '0'
     for key in names:
         context.bot.send_message(chat_id=names[key],
                                  text=(' //// ЗАМЕНЫ ////'))
     for key in names:
         context.bot.send_message(chat_id=names[key],
-                                 text=('Дата замены на:  '+ data1))
+                                 text=('Замены на:  ' + data1))
     for i in range(1, len(lis1)):
         kk = ''
         l = lis1[i]
-        if l[1] == 'П-283':
-            pp='1'
+        if l[1] == 'П-283' or l[1] == 'п-283' or l[1] == 'П283' or l[1] == 'п283':
+            pp = '1'
             for j in range(len(l)):
-                kk = kk+l[j] + ' '
+                kk = kk + l[j] + ' '
             for key in names:
                 context.bot.send_message(chat_id=names[key],
-                                         text=(kk+'\n'))
+                                         text=(kk + '\n'))
     if pp == '0':
         for key in names:
             context.bot.send_message(chat_id=names[key],
-                                     text='замен на эту дату ' + data1 + ' нет!!')
+                                     text='Замен на эту дату ' + data1 + ' нет!!')
     pp = '0'
     for key in names:
         context.bot.send_message(chat_id=names[key],
-                                 text=('Дата замены на:  ' + data2))
+                                 text=('Замены на:  ' + data2))
     for i in range(1, len(lis2)):
         kk = ''
         l = lis2[i]
-        if l[1] == 'П-283':
-            pp='1'
+        if l[1] == 'П-283' or l[1] == 'п-283' or l[1] == 'П283' or l[1] == 'п283':
+            pp = '1'
             for j in range(len(l)):
-                kk = kk+l[j] + ' '
+                kk = kk + l[j] + ' '
             for key in names:
                 context.bot.send_message(chat_id=names[key],
-                                         text=(kk+'\n'))
+                                         text=(kk + '\n'))
     if pp == '0':
         for key in names:
             context.bot.send_message(chat_id=names[key],
-                                     text='замен на эту дату ' + data2 + ' нет!!')
-    s.enter(10, 1, upkmsk(update=update, context=context), (s,))
+                                     text='Замен на эту дату ' + data2 + ' нет!!')
+    # s.enter(120, 1, upkmsk1(update=update, context=context), (s,))
 
 
 
@@ -432,8 +435,11 @@ def message_handler(update: Update, context: CallbackContext):
 
 
     if text == '3596' and id == 574227924:
-        s.enter(5, 1, upkmsk1(update=update, context=context), (s,))
-        s.run()
+
+        upkmsk1(update=update, context=context)
+
+        # s.enter(120, 1, upkmsk1(update=update, context=context), (s,))
+        # s.run()
 
 
     if text=='user' or text=='User' :
